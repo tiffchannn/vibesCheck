@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vibes Check</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+
+      header{
+        display: flex;
+        justify-content: space-between;
+      }
+
+    </style>
+
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+
+    <header>
+        <h1 class="title">Hey, {{user.first_name}}!  </h1>
+        {# drop down menu - view account info, logout #}
+        <a class="action-link" href="/logout">Log Out</a>
+    </header>
+
+
+    <div class="dashboard-content">
+
+
+      <div class="side-playlist-panel">
+        {# browse feature? #}
+        {# side panel that shows all user's playlists - include add playlist button#}
+        <table class="table table-sm table-dark">
+          <thead>
+            <tr>
+              <th class="title" scope="col">PLAYLISTS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for playlist in all_playlists %}
+            <tr>
+              <td><a class="playlist-item" href="/vibesCheck/playlist/{{playlist.id}}">{{playlist.name}}</a></td>
+            </tr>
+            {% endfor %}
+            <tr>
+              {# clicking this redirects to add new playlist page #}
+              <td><img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/vibesCheck/newPlaylist"> New Playlist</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="all-music-content">
+
+        <h1 class="title">ALL SONGS</h1>
+        <img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/vibesCheck/newSong"> Add Song</a>
+
+        <table class="table table-sm table-hover table-dark">
+          <thead>
+            <tr>
+              <th scope="col">Like</th>
+              <th scope="col">Title</th>
+              <th scope="col">Artist</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for song in all_songs %}
+            <tr>
+
+              {% if song in liked_songs %}
+              <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">💚</a></td>
+              {% else %}
+              <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">🤍</a></td>
+              {% endif %}
+
+              <td><a class="song-title" href="/vibesCheck/song/{{song.id}}">{{song.title}}</a></td>
+              <td>{{song.artist}}</td>
+
+
+              <td>
+                <div class="btn-group dropright">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Add to Playlist
+                  </button>
+
+                  <div class="dropdown-menu">
+                      {% for playlist in all_playlists %}
+                      <a class="dropdown-item" href="/vibesCheck/addToPlaylist/{{playlist.id}}?song_id={{song.id}}">{{playlist.name}}</a>
+                      {% endfor %}
+                  </div>
+                </div>
+              </td>
+
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

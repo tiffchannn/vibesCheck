@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vibes Check</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <style>
+      header{
+        display: flex;
+        justify-content: space-between;
+      }
+
+      h1{
+        margin-left: 40%;
+      }
+
+
+    </style>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+
+
+    <header>
+      <h1 class="title">{{song.title}}</h1>
+      <a class="action-link" href="/dashboard">🏠 Dashboard</a>
+    </header>
+
+
+    <div id='main-content'>
+
+      <img class="song-image" src="{{song.image_url}}">
+
+      <div class="info-content">
+        <h3 class="title">Song Title:</h3>
+        <p>{{song.title}}</p>
+        <h3 class="title">Artist:</h3>
+        <p>{{song.artist}}</p>
+        <div class="info-content-bottom-row">
+          {% if song in liked_songs %}
+          <a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">💚</a>
+          {% else %}
+          <a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">🤍</a>
+          {% endif %}
+
+          <a class="edit-link" href="/vibesCheck/editSong/{{song.id}}">Edit Song</a>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

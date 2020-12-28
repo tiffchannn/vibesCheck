@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vibes Check</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <style>
+      header{
+        display: flex;
+        justify-content: space-between;
+      }
+
+      h1 {
+        margin-left: 43%
+      }
+
+      .btn{
+        margin-left: 38%;
+        margin-top: 10px;
+      }
+
+      .btn-group>.btn {
+        margin-left: 20px;
+      }
+
+    </style>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+
+    <header>
+      <h1 class="title">Add New Song</h1>
+      <a class="action-link" href="/dashboard"><img class="cancel-btn" src="{% static 'images/cancel_button.png' %}"></a>
+    </header>
+
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+
+    <div class="new-song-content">
+
+      <form method='POST'>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="form-title" class="col-sm-4 col-form-label">Title:</label>
+          <div class="col-auto">
+              <input type="text" class="form-control" name="title">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="form-artist" class="col-sm-4 col-form-label">Artist:</label>
+          <div class="col-auto">
+              <input type="text" class="form-control" name="artist">
+          </div>
+        </div>
+        <input type="submit" class="btn btn-outline-success" name="button" value="Create New Song">
+      </form>
+    </div>
+
+    </div>
+
+
+
+    <div class="new-song-content">
+      <h2 class="title">Search : </h2>
+
+      <form action="/vibesCheck/searchSong" method='POST'>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="form-title" class="col-sm-4 col-form-label"></label>
+          <div class="col-auto">
+              <input type="text" class="form-control" name="title">
+          </div>
+        </div>
+        <input type="submit" class="btn btn-outline-success" name="button" value="Search">
+      </form>
+
+      <table class="table table-sm table-hover table-dark">
+        <thead>
+          <tr>
+            <th scope="col-auto">Like</th>
+            <th scope="col">Title</th>
+            <th scope="col">Artist</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for song in songs %}
+          <tr>
+
+            {% if song in liked_songs %}
+            <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri=/vibesCheck/song/{{song.id}}">💚</a></td>
+            {% else %}
+            <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri=/vibesCheck/song/{{song.id}}">🤍</a></td>
+            {% endif %}
+
+            <td><a class="song-title" href="/vibesCheck/song/{{song.id}}">{{song.title}}</a></td>
+            <td>{{song.artist}}</td>
+
+
+
+
+
+
+            {# dropdown menu to add song to playlist #}
+            <td>
+              <div class="btn-group dropright">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Add to Playlist
+                </button>
+
+                {# display all playlists #}
+                <div class="dropdown-menu">
+                    {% for playlist in all_playlists %}
+                    <a class="dropdown-item" href="/vibesCheck/addToPlaylist/{{playlist.id}}?song_id={{song.id}}">{{playlist.name}}</a>
+                    {% endfor %}
+                </div>
+              </div>
+            </td>
+
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+
+
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vibes Check</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <style>
+      *{
+        margin: 3px;
+      }
+
+      .header{
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .btn-primary{
+        margin-top: 8px;
+      }
+
+      .btn{
+        margin-left: 24%;
+        margin-top: 10px;
+      }
+
+    </style>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  </head>
+  <body>
+  {# Edit playlist name, unfavorite/remove songs #}
+  {# Display playlist info: name, desc, created by, how many songs #}
+  {# Display playlist contents in table form - song title, artist, album, date when song was added,  length of song?#}
+
+    <div class="header">
+      <h1 class="title">Edit {{playlist.name}}</h1>
+      <a class="action-link" href="/dashboard">🏠 Dashboard</a>
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="playlist-form">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="playlist-name" class="col-sm-4 col-form-label">Playlist Name:</label>
+          <div class="col-auto">
+            <input type="text" class="form-control" name="playlist_name" value="{{playlist.name}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="playlist-desc" class="col-sm-4 col-form-label">Description: </label>
+          <div class="col-auto">
+            <input type="text" class="form-control" name="playlist_desc" value="{{playlist.desc}}">
+          </div>
+        </div>
+        <input type="submit" class="btn btn-outline-success" name="button" value="Update">
+        <input type="submit" class="btn btn-outline-success" name="button" value="Delete">
+      </form>
+    </div>
+
+
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
+
+

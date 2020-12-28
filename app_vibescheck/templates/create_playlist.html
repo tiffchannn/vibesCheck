@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vibes Check</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <style>
+
+      .btn{
+        margin-left: 38%;
+        margin-top: 10px;
+      }
+
+      header{
+        display: flex;
+        justify-content: space-between;
+      }
+
+      h1 {
+        margin-left: 43%
+      }
+
+    </style>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+
+    <header>
+      <h1 class="title">Create Playlist</h1>
+      <a class="action-link" href="/dashboard"><img class="cancel-btn" src="{% static 'images/cancel_button.png' %}"></a>
+    </header>>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="create-content">
+
+      <form action="/vibesCheck/newPlaylist" method='POST'>
+          {% csrf_token %}
+        <div class="form-group">
+          <label for="form-title" class="col-sm-4 col-form-label">Playlist Name:</label>
+          <div class="col-auto">
+            <input type="text" class="form-control" name="playlist_name" placeholder="This vibe needs a name.">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="form-desc" class="col-sm-4 col-form-label">Description:</label>
+          <div class="col-sm-auto">
+            <input type="text" class="form-control" name="playlist_desc" placeholder="Give your playlist a catchy description.">
+          </div>
+        </div>
+        <input type="submit" class="btn btn-outline-success" name="button" value="Create A Vibe">
+      </form>
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
