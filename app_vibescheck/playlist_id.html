@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vibes Check</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <style>
+
+      header{
+        display: flex;
+        justify-content: space-between;
+      }
+
+      h1{
+        margin-left: 45%;
+      }
+
+    </style>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+
+    <header>
+      <h1 class="title">{{playlist.name}}</h1>
+      <a class="action-link" href="/">🏠 Dashboard</a>
+    </header>
+
+    <div class="info-content">
+
+      <h4 class="title">Description:</h4>
+      <p>{{playlist.desc}}</p>
+      <h4 class="title">Created By:</h4>
+      <p> {{playlist.user.first_name}}</p>
+      <h4 class="title">Made On:</h4>
+      <p> {{playlist.created_at}}</p>
+
+      <a class="edit-link" href="/playlist/{{playlist.id}}/edit-link">Edit Playlist</a>
+
+
+    </div>
+
+    <div class="playlist-songs">
+
+      {% if playlist_songs|length > 0 %}
+      <h1 class="playlist-info-title">SONGS</h1>
+      <table class="table table-sm table-hover table-dark">
+        <thead>
+          <tr>
+            <th class="green-heart" scope="col"></th>
+            <th scope="col">Title</th>
+            <th scope="col">Artist</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for song in playlist_songs %}
+          <tr>
+            {% if song in liked_songs %}
+            <td><a href="/song/{{song.id}}/like?redirect_uri={{request.get_full_path}}">💚</a></td>
+            {% else %}
+            <td><a href="/song/{{song.id}}/like?redirect_uri={{request.get_full_path}}">🤍</a></td>
+            {% endif %}
+            <td><a class="song-title" href="/song/{{song.id}}">{{song.title}}</a></td>
+            <td>{{song.artist}}</td>
+            <td><a href="/playlist/{{playlist.id}}/song/{{song.id}}/toggle">Remove From Playlist</a></td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+      {% else %}
+      <h5 class="note">You don't have any songs in this playlist.</h5>
+      {% endif %}
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

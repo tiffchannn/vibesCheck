@@ -34,7 +34,7 @@
 
     <header>
       <h1 class="title">Create Playlist</h1>
-      <a class="action-link" href="/dashboard"><img class="cancel-btn" src="{% static 'images/cancel_button.png' %}"></a>
+      <a class="action-link" href="/"><img class="cancel-btn" src="{% static 'images/cancel_button.png' %}"></a>
     </header>>
 
     {% if messages %}
@@ -47,7 +47,7 @@
 
     <div class="create-content">
 
-      <form action="/vibesCheck/newPlaylist" method='POST'>
+      <form action="/playlist/new" method='POST'>
           {% csrf_token %}
         <div class="form-group">
           <label for="form-title" class="col-sm-4 col-form-label">Playlist Name:</label>

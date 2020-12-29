@@ -45,12 +45,12 @@
           <tbody>
             {% for playlist in all_playlists %}
             <tr>
-              <td><a class="playlist-item" href="/vibesCheck/playlist/{{playlist.id}}">{{playlist.name}}</a></td>
+              <td><a class="playlist-item" href="/playlist/{{playlist.id}}">{{playlist.name}}</a></td>
             </tr>
             {% endfor %}
             <tr>
               {# clicking this redirects to add new playlist page #}
-              <td><img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/vibesCheck/newPlaylist"> New Playlist</a></td>
+              <td><img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/playlist/new"> New Playlist</a></td>
             </tr>
           </tbody>
         </table>
@@ -59,7 +59,7 @@
       <div class="all-music-content">
 
         <h1 class="title">ALL SONGS</h1>
-        <img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/vibesCheck/newSong"> Add Song</a>
+        <img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/song/new"> Add Song</a>
 
         <table class="table table-sm table-hover table-dark">
           <thead>
@@ -75,12 +75,12 @@
             <tr>
 
               {% if song in liked_songs %}
-              <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">💚</a></td>
+              <td><a href="/song/{{song.id}}/like?redirect_uri={{request.get_full_path}}">💚</a></td>
               {% else %}
-              <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">🤍</a></td>
+              <td><a href="/song/{{song.id}}/like?redirect_uri={{request.get_full_path}}">🤍</a></td>
               {% endif %}
 
-              <td><a class="song-title" href="/vibesCheck/song/{{song.id}}">{{song.title}}</a></td>
+              <td><a class="song-title" href="/song/{{song.id}}">{{song.title}}</a></td>
               <td>{{song.artist}}</td>
 
 
@@ -92,7 +92,7 @@
 
                   <div class="dropdown-menu">
                       {% for playlist in all_playlists %}
-                      <a class="dropdown-item" href="/vibesCheck/addToPlaylist/{{playlist.id}}?song_id={{song.id}}">{{playlist.name}}</a>
+                      <a class="dropdown-item" href="/playlist/{{playlist.id}}/song/{{song.id}}/toggle">{{playlist.name}}</a>
                       {% endfor %}
                   </div>
                 </div>

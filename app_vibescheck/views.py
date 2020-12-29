@@ -8,39 +8,31 @@ from datetime import date
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import sys
-import pprint
-
-
-def index(request):
-    return render(request, 'index.html')
 
 
 def register(request):
     if request.method == 'POST':
         errors = User.objects.validate_registration(request.POST)
 
-    if len(errors) > 0:
-        for key, value in errors.items():
-            messages.error(request, value)
-        return redirect('/')
-    else:
-        form_password = request.POST['password']
-        pw_hash = bcrypt.hashpw(form_password.encode(), bcrypt.gensalt()).decode()
+        if len(errors) > 0:
+            for key, value in errors.items():
+                messages.error(request, value)
+        else:
+            form_password = request.POST['password']
+            pw_hash = bcrypt.hashpw(form_password.encode(), bcrypt.gensalt()).decode()
 
-        created_user = User.objects.create(
-            first_name = request.POST['first_name'],
-            last_name = request.POST['last_name'],
-            email = request.POST['email'],
-            birthday = request.POST['birthday'],
-            password = pw_hash
-            )
+            user = User.objects.create(
+                first_name = request.POST['first_name'],
+                last_name = request.POST['last_name'],
+                email = request.POST['email'],
+                birthday = request.POST['birthday'],
+                password = pw_hash
+                )
 
-        request.session['user_id'] = created_user.id
+            request.session['user_id'] = user.id
+            messages.success(request, "Registration was successful, please login!")
 
-        messages.success(request, "Registration was successful, please login!")
-
-        print('New User: ', created_user)
-        return redirect('/')
+    return redirect('/')
 
 def login(request):
     if request.method == 'POST':
@@ -48,126 +40,105 @@ def login(request):
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value)
-            return redirect('/')
         else:
             user = User.objects.get(email=request.POST['login_email'])
             request.session['user_id'] = user.id
 
-            print('User ID:', user.id)
-            return redirect('/dashboard')
+    return redirect('/')
 
-def dashboard(request):
+def logout(request):
+
+    request.session.clear()
+    return redirect('/')
+
+def index(request):
     if 'user_id' not in request.session:
         messages.error(request, "Please log in!")
-        return redirect('/')
+        return render(request, 'index.html')
 
     user = User.objects.get(id=request.session['user_id'])
     liked_songs = user.liked_songs.all()
 
+    # TODO: Make showing liked songs less expensive
     context = {
-        "user": User.objects.get(id=user.id),
+        "user": user,
         "all_playlists": Playlist.objects.all(),
         "all_songs": Song.objects.all(),
-        "liked_songs": liked_songs# user's liked songs
+        "liked_songs": liked_songs # user's liked songs
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'home.html', context)
 
-
-def create_song(request):
+def song_new(request):
     user = User.objects.get(id=request.session['user_id'])
 
     if request.method == 'GET':
-        return render(request, 'create_song.html')
+        return render(request, 'song_new.html')
 
     elif request.method == 'POST':
-        if request.POST['button'] == "Create New Song":
-            print('this is creating a new song')
 
         errors = Song.objects.validate_song(request.POST)
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value)
-            return redirect('/vibesCheck/newSong')
+            return redirect('/song/new')
         else:
-            form_title = request.POST['title']
-            form_artist = request.POST['artist']
-            song = Song.objects.create(title=form_title, artist=form_artist)
-            print("Song ID: " + str(song.id))
+            song = Song.objects.create(title=request.POST['title'], artist=request.POST['artist'])
 
-            print('-'*70)
-            print('New Song Added: ', request.POST)
-            return redirect('/dashboard')
+            return redirect('/')
 
-def search_song(request):
+    return redirect('/')
+
+def song_search(request):
+    SETTINGS = {
+        "client_id": "cf3e3d623cae428987e52a41c5f9ad8a",
+        "client_secret": "522fb8f9cc734d4f9b3c62c39cd19c1f",
+        "search_limit": 5
+    }
+    user = User.objects.get(id=request.session['user_id'])
+
     if request.method == 'POST':
-        search_str = request.POST['title']
+        sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=SETTINGS['client_id'],client_secret=SETTINGS['client_secret']))
+        results = sp.search(request.POST['title'], limit = SETTINGS['search_limit'])
 
-        sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id="cf3e3d623cae428987e52a41c5f9ad8a",client_secret="522fb8f9cc734d4f9b3c62c39cd19c1f"))
-        results = sp.search(search_str, limit = 5)
-
-        user = User.objects.get(id=request.session['user_id'])
-        liked_songs = user.liked_songs.all()
-
-        # return JsonResponse(results)
-
-
+        # Loop through spotify search results and create list of song objects
+        songs = []
         search_results = []
-        for song in results['tracks']['items']:
-            song_info = {
-                "name": "",
+        for result in results['tracks']['items']:
+            song = {
+                "title": "",
                 "artist": "",
                 "image_url": ""
             }
-            song_info['name'] = song['name']
-            song_info['image_url'] = song['album']['images'][1]['url']
-            print('Image Url: ', song_info['image_url'], 'Height: ', song['album']['images'][1]['height'])
-
+            song['title'] = result['name']
+            song['image_url'] = result['album']['images'][1]['url']
 
             song_artists_list = []
-            for artist in song['artists']:
+            for artist in result['artists']:
                 song_artists_list.append(artist['name'])
-            song_info['artist'] = ", ".join(song_artists_list)
-            search_results.append(song_info)
-
-        songs = []
-        for result in search_results:
-            search_song = {
-                'title': result['name'],
-                'artist': result['artist'],
-                'image_url': result['image_url']
-            }
-            print('Song Title: ', result['name'])
-
-            print('Artist: ', result['artist'])
-
+            song['artist'] = ", ".join(song_artists_list)
+            search_results.append(song)
 
             # take search results and add info into db as new song
-            errors = Song.objects.validate_song(search_song)
+            errors = Song.objects.validate_song(song)
             if len(errors) > 0:
                 for key, value in errors.items():
                     messages.error(request, value)
-                # return redirect('/vibesCheck/newSong')
             else:
-                song = Song.objects.create(title=search_song['title'], artist=search_song['artist'], image_url=search_song['image_url'])
+                song = Song.objects.create(title=song['title'], artist=song['artist'], image_url=song['image_url'])
                 songs.append(song)
-                print("Song ID: " + str(song.id))
-
-                print('-'*70)
-                print('New Song Added: ', song)
 
 
         context = {
-            "user": User.objects.get(id=user.id),
+            "user": user,
             "all_playlists": Playlist.objects.all(),
             "all_songs": Song.objects.all(),
-            "liked_songs": liked_songs, # user's liked songs
+            "liked_songs": user.liked_songs.all(), # user's liked songs
             "songs": songs # list of songs that were added from the search bar
         }
 
-        return render(request, 'create_song.html', context)
+        return render(request, 'song_new.html', context)
 
-
-def song_info(request, song_id):
+def song_id(request, song_id):
 
     song = Song.objects.get(id=song_id)
     user = User.objects.get(id=request.session['user_id'])
@@ -177,10 +148,9 @@ def song_info(request, song_id):
         'user': user,
         'liked_songs': user.liked_songs.all()
     }
-    return render(request, 'song_info.html', context)
+    return render(request, 'song_id.html', context)
 
-
-def edit_song(request, song_id):
+def song_id_edit(request, song_id):
 
     song = Song.objects.get(id=song_id)
     user = User.objects.get(id=request.session['user_id'])
@@ -190,162 +160,120 @@ def edit_song(request, song_id):
             'song': song,
             'user': user
         }
-        return render(request, 'edit_song.html', context)
+        return render(request, 'song_id_edit.html', context)
 
     elif request.method == 'POST':
         if request.POST['button'] == 'Update':
-            print('this is updating id: ' + str(song_id))
 
             errors = Song.objects.validate_song(request.POST)
-            user = User.objects.get(id=request.session['user_id'])
 
             if len(errors) > 0:
                 for key, value in errors.items():
                     messages.error(request, value)
-                return redirect(f'/vibesCheck/editSong/{song_id}')
+                return redirect(f'/song/{song_id}/edit')
             else:
-                song_to_update = Song.objects.get(id=song_id)
-                song_to_update.title = request.POST['title']
-                song_to_update.artist = request.POST['artist'].strip()
-                song_to_update.save()
-
-                print('Song was updated!', request.POST)
-                return redirect('/dashboard')
+                song.title = request.POST['title']
+                song.artist = request.POST['artist'].strip()
+                song.save()
 
         elif request.POST['button'] == 'Delete':
-            song_to_delete = Song.objects.get(id=song_id)
-            song_to_delete.delete()
+            song.delete()
 
-            print("Song was deleted!")
-            return redirect('/dashboard')
+    return redirect('/')
 
-def like_song(request, song_id):
+def song_id_like(request, song_id):
 
     user = User.objects.get(id = request.session['user_id'])
     song = Song.objects.get(id=song_id)
 
-    if song not in user.liked_songs.all():
-        user.liked_songs.add(song.id)
-        print('-'*70)
-        print('Song was liked!', str(song.title))
-    else:
+    if song in user.liked_songs.all():
         user.liked_songs.remove(song.id)
-        print('-'*70)
-        print('Song was unliked!', str(song.title))
+
+    else:
+        user.liked_songs.add(song.id)
 
     return redirect(request.GET['redirect_uri'])
 
-def add_song_to_playlist(request, playlist_id):
+def playlist_id_song_id_toggle(request, playlist_id, song_id):
 
     playlist = Playlist.objects.get(id=playlist_id)
-    song = Song.objects.get(id=request.GET['song_id'])
+    song = Song.objects.get(id=song_id)
 
-    if song not in playlist.songs.all():
+    if song in playlist.songs.all():
+        playlist.songs.remove(song.id)
+        return redirect(f'/playlist/{playlist_id}')
+    else:
         playlist.songs.add(song.id)
-        print('-'*70)
-        print('Song was added to playlist!', str(song.title), '\nPlaylist :', playlist.name)
+        return redirect(f'/')
 
-    return redirect('/dashboard')
-
-def create_playlist(request):
+def playlist_new(request):
 
     user = User.objects.get(id=request.session['user_id'])
 
     if request.method == 'GET':
-        return render(request, 'create_playlist.html')
+        return render(request, 'playlist_new.html')
 
     elif request.method == 'POST':
-        if request.POST['button'] == "Create A Vibe":
-            print('This is creating a playlist')
 
         errors = Playlist.objects.validate_playlist(request.POST)
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value)
-            return redirect('/vibesCheck/newPlaylist')
+            return redirect('/playlist/new')
         else:
-            form_playlist_name = request.POST['playlist_name']
-            form_desc = request.POST['playlist_desc']
-            playlist = Playlist.objects.create(name=form_playlist_name, desc=form_desc, user=user)
-            print("Playlist ID: " + str(playlist.id))
+            playlist = Playlist.objects.create(name=request.POST['playlist_name'], desc=request.POST['playlist_desc'], user=user)
 
-            print('-'*70)
-            print('New Playlist Added: ', request.POST)
-            return redirect('/dashboard')
+    return redirect('/')
 
-def edit_playlist(request, playlist_id):
+def playlist_id_edit(request, playlist_id):
 
     playlist = Playlist.objects.get(id=playlist_id)
     user = User.objects.get(id=request.session['user_id'])
 
     if request.method == 'GET':
         context={
-            "all_playlists": Playlist.objects.all(), # all playlists for user
+            'all_playlists': Playlist.objects.all(), # all playlists for user
             'playlist': playlist, # specific playlist
             'playlist_songs': playlist.songs.all(),
-            "all_songs": Song.objects.all(),
+            'all_songs': Song.objects.all(),
             'user': user
         }
-        return render(request, 'edit_playlist.html', context)
+        return render(request, 'playlist_id_edit.html', context)
 
     elif request.method == 'POST':
         if request.POST['button'] == 'Update':
 
             errors = Playlist.objects.validate_playlist(request.POST)
-            user = User.objects.get(id=request.session['user_id'])
 
             if len(errors) > 0:
                 for key, value in errors.items():
                     messages.error(request, value)
-                return redirect(f'/vibesCheck/editPlaylist/{playlist_id}')
+                return redirect(f'/playlist/{playlist_id}/edit')
             else:
-                playlist_to_update = Playlist.objects.get(id=playlist_id)
-                playlist_to_update.name = request.POST['playlist_name']
-                playlist_to_update.desc = request.POST['playlist_desc'].strip()
-                playlist_to_update.save()
+                playlist.name = request.POST['playlist_name']
+                playlist.desc = request.POST['playlist_desc'].strip()
+                playlist.save()
 
-                print('Playlist was updated!', request.POST)
-                return redirect('/dashboard')
+                return redirect('/')
 
         elif request.POST['button'] == 'Delete':
-            playlist_to_delete = Playlist.objects.get(id=playlist_id)
-            playlist_to_delete.delete()
+            playlist.delete()
+            return redirect('/')
 
-            print("Playlist was deleted!")
-            return redirect('/dashboard')
+    return redirect(f'/playlist/{playlist_id}')
 
-
-
-def playlist_info(request, playlist_id):
+def playlist_id(request, playlist_id):
 
     playlist = Playlist.objects.get(id=playlist_id)
     user = User.objects.get(id=request.session['user_id'])
 
     context={
-        'playlist': Playlist.objects.get(id=playlist_id),
-        'user': User.objects.get(id=request.session['user_id']),
+        'playlist': playlist,
+        'user': user,
         'playlist_songs': playlist.songs.all(),
         'liked_songs': user.liked_songs.all()
     }
-    return render(request, 'playlist_info.html', context)
-
-def remove_song_from_playlist(request, playlist_id):
-
-    playlist = Playlist.objects.get(id=playlist_id)
-    song_id = request.GET['song_id']
-    playlist.songs.remove(song_id)
-
-    print('Song was removed from playlist!', song_id)
-    return redirect(f'/vibesCheck/playlist/{playlist_id}')
-
-
-def logout(request):
-
-    request.session.clear()
-
-    print("Logged Out!")
-    messages.success(request, "You have been logged out!")
-    return redirect('/')
+    return render(request, 'playlist_id.html', context)
 
 
 # To get all songs for a playlist

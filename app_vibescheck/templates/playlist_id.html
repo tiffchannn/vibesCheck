@@ -29,7 +29,7 @@
 
     <header>
       <h1 class="title">{{playlist.name}}</h1>
-      <a class="action-link" href="/dashboard">🏠 Dashboard</a>
+      <a class="action-link" href="/">🏠 Dashboard</a>
     </header>
 
     <div class="info-content">
@@ -41,7 +41,7 @@
       <h4 class="title">Made On:</h4>
       <p> {{playlist.created_at}}</p>
 
-      <a class="edit-link" href="/vibesCheck/editPlaylist/{{playlist.id}}">Edit Playlist</a>
+      <a class="edit-link" href="/playlist/{{playlist.id}}/edit">Edit Playlist</a>
 
 
     </div>
@@ -64,13 +64,13 @@
           {% for song in playlist_songs %}
           <tr>
             {% if song in liked_songs %}
-            <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">💚</a></td>
+            <td><a href="/song/{{song.id}}/like?redirect_uri={{request.get_full_path}}">💚</a></td>
             {% else %}
-            <td><a href="/vibesCheck/likeSong/{{song.id}}?redirect_uri={{request.get_full_path}}">🤍</a></td>
+            <td><a href="/song/{{song.id}}/like?redirect_uri={{request.get_full_path}}">🤍</a></td>
             {% endif %}
-            <td><a class="song-title" href="/vibesCheck/song/{{song.id}}">{{song.title}}</a></td>
+            <td><a class="song-title" href="/song/{{song.id}}">{{song.title}}</a></td>
             <td>{{song.artist}}</td>
-            <td><a href="/vibesCheck/removeSong/{{playlist.id}}?song_id={{song.id}}">Remove From Playlist</a></td>
+            <td><a href="/playlist/{{playlist.id}}/song/{{song.id}}/toggle">Remove From Playlist</a></td>
           </tr>
           {% endfor %}
 
