@@ -21,8 +21,16 @@ h1{
   text-shadow: 1px 1px 2px black, 0 0 25px rgb(238, 188, 52), 0 0 5px rgb(238, 188, 52);
 }
 
+.error{
+  color: #2ce656;
+  text-align: center;
+  text-decoration: none;
+}
+
 .messages{
   color: #2ce656;
+  text-align: center;
+  text-decoration: none;
 }
 
 #container{
@@ -94,10 +102,6 @@ h1{
   width: 25px;
 }
 
-.btn{
-  line-height: 0.5;
-}
-
 .btn-primary {
   color: #fff;
   background-color: #2ce656;
@@ -151,6 +155,20 @@ a{
   justify-content: space-evenly;
   max-width: 700px;
   margin: 0 auto;
+}
+
+.create-new-song-btn{
+  line-height: 1.5;
+  border: 1px solid #2ce656;
+  border-radius: 5px;
+  margin-left: 40%;
+}
+
+.search-btn{
+  line-height: 1.5;
+  border: 1px solid #2ce656;
+  border-radius: 5px;
+  margin-left: 45%;
 }
 
 .cancel-btn{
