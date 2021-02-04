@@ -86,7 +86,7 @@ class PlaylistManager(models.Manager):
 
         # see if playlist name already exists
         # Note: description will be optional
-        playlistNameList = Playlist.objects.filter(name=name).filter(desc=desc)
+        playlistNameList = Playlist.objects.filter(name=name)
 
         if len(playlistNameList) > 0:
             errors['name'] = "This playlist name already exists!"

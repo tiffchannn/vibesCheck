@@ -45,8 +45,7 @@ def login(request):
             user = User.objects.get(email=request.POST['login_email'])
             request.session['user_id'] = user.id
 
-    # return redirect('/')
-    return render(request, 'home.html')
+    return redirect('/')
 
 def logout(request):
 
@@ -70,7 +69,6 @@ def index(request):
         "liked_songs": liked_songs # user's liked songs
     }
     # when successfully registered, redirect back to login/register page & login
-    # return render(request, 'index.html')
     return render(request, 'home.html', context)
 
 def song_new(request):

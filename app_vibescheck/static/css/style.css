@@ -24,13 +24,12 @@ h1{
 .error{
   color: #2ce656;
   text-align: center;
-  text-decoration: none;
 }
 
 .messages{
   color: #2ce656;
   text-align: center;
-  text-decoration: none;
+  list-style: none;
 }
 
 #container{
