@@ -25,7 +25,7 @@ SECRET_KEY = 'i0bxrn%wvgx30o@*gsx%2awn^c-itxiq9h3+ygd4*szzg*x_5p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vibescheck.herokuapp.com']
 
 
 # Application definition
