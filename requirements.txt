@@ -11,5 +11,6 @@ six==1.15.0
 spotipy==2.16.1
 sqlparse==0.4.1
 urllib3==1.26.2
-gunicorn
 whitenoise
+gunicorn
+django-heroku
