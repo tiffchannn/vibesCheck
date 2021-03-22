@@ -55,7 +55,7 @@
 
       <form method='POST'>
         {% csrf_token %}
-        <div class="form-group">
+        <div class="new-song-form form-group">
           <label for="form-title" class="col-sm-4 col-form-label">Title:</label>
           <div class="col-auto">
               <input type="text" class="form-control" name="title">
@@ -67,7 +67,7 @@
               <input type="text" class="form-control" name="artist">
           </div>
         </div>
-        <input type="submit" class="btn btn-outline-success" name="button" value="Create New Song">
+        <input type="submit" class="create-new-song-btn btn-outline-success" name="button" value="Create New Song">
       </form>
     </div>
 
@@ -80,13 +80,13 @@
 
       <form action="/song/search" method='POST'>
         {% csrf_token %}
-        <div class="form-group">
+        <div class="new-song-form form-group">
           <label for="form-title" class="col-sm-4 col-form-label"></label>
           <div class="col-auto">
               <input type="text" class="form-control" name="title">
           </div>
         </div>
-        <input type="submit" class="btn btn-outline-success" name="button" value="Search">
+        <input type="submit" class="search-btn btn-outline-success" name="button" value="Search">
       </form>
 
       <table class="table table-sm table-hover table-dark">

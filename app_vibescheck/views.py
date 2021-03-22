@@ -32,7 +32,8 @@ def register(request):
             request.session['user_id'] = user.id
             messages.success(request, "Registration was successful, please login!")
 
-    return redirect('/')
+    # return redirect('/')
+    return render(request, 'index.html')
 
 def login(request):
     if request.method == 'POST':
@@ -49,11 +50,12 @@ def login(request):
 def logout(request):
 
     request.session.clear()
+    # messages.success(request, "Logout was successful, until next time!")
     return redirect('/')
 
 def index(request):
     if 'user_id' not in request.session:
-        messages.error(request, "Please log in!")
+        # messages.error(request, "Please log in!")
         return render(request, 'index.html')
 
     user = User.objects.get(id=request.session['user_id'])
@@ -66,6 +68,7 @@ def index(request):
         "all_songs": Song.objects.all(),
         "liked_songs": liked_songs # user's liked songs
     }
+    # when successfully registered, redirect back to login/register page & login
     return render(request, 'home.html', context)
 
 def song_new(request):
