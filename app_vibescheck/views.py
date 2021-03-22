@@ -32,7 +32,8 @@ def register(request):
             request.session['user_id'] = user.id
             messages.success(request, "Registration was successful, please login!")
 
-    return redirect('/')
+    # return redirect('/')
+    return render(request, 'index.html')
 
 def login(request):
     if request.method == 'POST':
@@ -45,6 +46,7 @@ def login(request):
             request.session['user_id'] = user.id
 
     return redirect('/')
+    # return render(request, 'home.html')
 
 def logout(request):
 
@@ -53,7 +55,7 @@ def logout(request):
 
 def index(request):
     if 'user_id' not in request.session:
-        messages.error(request, "Please log in!")
+        # messages.error(request, "Please log in!")
         return render(request, 'index.html')
 
     user = User.objects.get(id=request.session['user_id'])
