@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 
     <style>
-      header{
+      .header{
         display: flex;
         justify-content: space-between;
       }
@@ -28,15 +28,19 @@
   <body>
 
 
-    <header>
+    <div class="header">
       <h1 class="title">{{song.title}}</h1>
       <a class="action-link" href="/">🏠 Dashboard</a>
-    </header>
+    </div>
 
 
     <div id='main-content'>
 
+      {% if  {{song.image_url}} === "unknown" %}
+      <p></p>
+      {% else %}
       <img class="song-image" src="{{song.image_url}}">
+      {% endif %}
 
       <div class="info-content">
         <h3 class="title">Song Title:</h3>
