@@ -50,7 +50,12 @@
             {% endfor %}
             <tr>
               {# clicking this redirects to add new playlist page #}
-              <td><img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/playlist/new"> New Playlist</a></td>
+              <td>
+                <a href="/playlist/new">
+                  <img class="add-btn" src="{% static 'images/add_button.png' %}" />
+                </a>
+                <a class="action-link" href="/playlist/new"> New Playlist</a>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -59,7 +64,10 @@
       <div class="all-music-content">
 
         <h1 class="title">ALL SONGS</h1>
-        <img class="add-btn" src="{% static 'images/add_button.png' %}" /><a class="action-link" href="/song/new"> Add Song</a>
+        <a href="/song/new">
+          <img class="add-btn" src="{% static 'images/add_button.png' %}" />
+        </a>
+        <a class="action-link" href="/song/new"> Add Song</a>
 
         <table class="table table-sm table-hover table-dark">
           <thead>
