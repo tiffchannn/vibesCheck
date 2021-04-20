@@ -3,11 +3,18 @@
 
 ## Join or login to account
 Users can create personalized accounts for Vibe Check. 
+- Email pattern validations are verified through regex.
+- Utilized Bcrypt and hashing to secure and validate passwords.
+- Created customized validations into models to ensure data and formatting was accurate prior to persisting data.
+- Display errors in real time based on user's input for mismatched password, age restrictions, and duplicate emails.
 
 ![alt text](https://media.giphy.com/media/0HbFE2Tg37onBCgmxg/giphy.gif)
 
 ## Search and add songs or artists to your account
-Manually add or search for songs to add to account. If using search, songs found will be automatically added to the users music collection and can be added to playlists. 
+Manually add or search for songs to add to account. If using search, songs found will be automatically added to the users music collection and can be added to playlists.
+- When adding songs manually, backend validations are enforced to determine duplicate entries, song title and artist name length. 
+- Song searches are fueled by the **Spotify API**, using their database to browse through artists and songs.
+- All songs searched, can be added into pre-existing playlists via dropdown menu or liked by clicking on a heart emoji. 
 
 ![alt text](https://media.giphy.com/media/konPkCd5ariB04Otgz/giphy.gif)
 
@@ -33,6 +40,9 @@ Curate a playlist in two ways:
 ![alt text](https://media.giphy.com/media/75SHCIvs81gjW0Dkae/giphy.gif)
 
 ## Create playlist
+- New playlists created are validated to ensure there aren't duplicate playlist names or descriptions.
+- Validations are set in place when playlists are updated or edited.
+
 ![alt text](https://media.giphy.com/media/vMqiCbLkGEcqQEr8of/giphy.gif)
 
 
