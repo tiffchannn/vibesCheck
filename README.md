@@ -1,5 +1,5 @@
 # Vibes Check
-**Music playlist creation and curation application using Python, Django and Bootstrap**
+**Music playlist creation and curation CRUD application using Python, Django and Bootstrap**
 
 ## Join or login to account
 Users can create personalized accounts for Vibe Check. 
@@ -45,5 +45,10 @@ Curate a playlist in two ways:
 
 ![alt text](https://media.giphy.com/media/vMqiCbLkGEcqQEr8of/giphy.gif)
 
+## Challenges and Notes:
+- When searching for a song, all songs pulled from the Spotify API are automatically added to a user's account. I would like to potentially prevent this from happening, and allow the user to pick and choose which songs to be saved to their account. I imagine that this could be done within views.py when saving the searches.  
+- Hopeful additions and features:
+  - Ability to sort the songs that are saved in the database.
+  - Song previews and playback options
 
 
