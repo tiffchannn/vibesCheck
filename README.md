@@ -1,6 +1,10 @@
 # Vibes Check
 **Music playlist creation and curation CRUD application using Python, Django and Bootstrap**
 
+**Front-End:** Bootstrap, CSS, HTML
+
+**Back-End:** Django
+
 ## Join or login to account
 Users can create personalized accounts for Vibe Check. 
 - Email pattern validations are verified through regex.
